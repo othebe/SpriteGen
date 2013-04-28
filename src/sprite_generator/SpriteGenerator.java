@@ -2,8 +2,16 @@ package sprite_generator;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
@@ -11,22 +19,103 @@ public class SpriteGenerator {
 	private ConfigOptions config;
 	private Packer packer;
 	private SpriteWriter sprite_writer;
-	private Compressor compressor;
 	private CSSWriter css_writer;
 	
+	private String tmp_dir;
 	private File[] images;
 	private Sprite sprite_rgb;
 	private Sprite sprite_rgba;
 	
+	
+	private static final String TMP_DIR_NAME = "tmp";
+	
 	//Constructor
 	public SpriteGenerator(File[] images) {
+		initialize();
+		this.images = images;
+	}
+	
+	//Constructor: Convert URLs to files
+	public SpriteGenerator(String[] urls) {
+		initialize();
+		ArrayList<File> images = new ArrayList<File>();
+		for(int i=0; i<urls.length; i++) {
+			try {
+				URL url = new URL(urls[i]);
+				get_url_data(url);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		this.images = (images.toArray(new File[0]));
+	}
+	
+	//Initialize general members
+	private void initialize() {
 		this.config = new ConfigOptions("spritegen.conf");
 		this.packer = Packer.createFromConfig(this.config);
 		this.sprite_writer = new SpriteWriter(this.config);
 		this.sprite_rgb = new Sprite("RGB", this.config);
 		this.sprite_rgba = new Sprite("RGBA", this.config);
-		this.images = images;
+		
+		//Check if tmp directory exists, else create
+		File tmp_dir = new File(SpriteGenerator.TMP_DIR_NAME);
+		if (!tmp_dir.exists()) {
+			tmp_dir.mkdir();
+		} else if (!tmp_dir.isDirectory()) {
+			System.err.printf("tmp directory required. File currently exists with that name.\n");
+			System.exit(0);
+		}
+		
+		//Create temporary directory for storing image files
+		boolean tmp_dir_created = false;
+		do {
+			this.tmp_dir = String.valueOf((int) (Math.random() * 1000) + 1);
+			File local_tmp_dir = new File(SpriteGenerator.TMP_DIR_NAME+File.separator+this.tmp_dir);
+			tmp_dir_created = local_tmp_dir.mkdir();
+		} while (!tmp_dir_created);
 	}
+	
+	//Save URL data to the local temp directory
+	private void get_url_data(URL url) {
+		String full_path = url.getFile();
+
+		//Extract filename
+		String filename = full_path.substring(full_path.lastIndexOf('/')+1);
+		//Only allow valid filenames
+		if (filename.indexOf('?') >= 0) filename = filename.substring(0, filename.indexOf('?'));
+		
+		
+		//Create file
+		File new_file = new File(SpriteGenerator.TMP_DIR_NAME+File.separator+this.tmp_dir+File.separator+filename);
+		try {
+			new_file.createNewFile();
+		} catch (IOException e1) {
+			System.err.printf("Could not create file: %s\n", new_file.toString());
+		}
+		
+		//Copy URL to file
+		try {
+			InputStream in = url.openStream();
+			FileOutputStream out = new FileOutputStream(new_file);
+			byte[] b = new byte[1024];
+			int bytesRead = 0;
+			
+			while ((bytesRead = in.read(b)) != -1) {
+				out.write(b, 0, bytesRead);
+		    }
+			
+			in.close();
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	
 	//Main method
 	public static void main(String[] args) {
@@ -43,7 +132,14 @@ public class SpriteGenerator {
 			return;
 		}
 		
-		SpriteGenerator sprite_gen = new SpriteGenerator(image_root_file.listFiles());
+		//SpriteGenerator sprite_gen = new SpriteGenerator(image_root_file.listFiles());
+		
+		ArrayList<String> urls = new ArrayList<String>();
+		File[] files = image_root_file.listFiles();
+		for(int i=0; i<files.length; i++) {
+			urls.add(files[i].toURI().toString());
+		}
+		SpriteGenerator sprite_gen = new SpriteGenerator((urls.toArray(new String[0])));
 		
 		sprite_gen.read_images();
 		sprite_gen.pack_images();

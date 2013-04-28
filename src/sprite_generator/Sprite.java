@@ -4,8 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 
-import sprite_generator.Packers.*;
-
 public class Sprite {
 	private String name;
 	private long original_size;

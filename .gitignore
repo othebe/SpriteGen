@@ -1,3 +1,5 @@
 /images
+/tmp
+/bin/*
 /*.png
 /*.jpg
