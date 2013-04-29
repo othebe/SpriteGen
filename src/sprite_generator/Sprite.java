@@ -42,14 +42,14 @@ public class Sprite {
 	}
 	
 	//Print analytics
-	protected void print_analytics() {
+	protected void print_analytics(String location) {
 		//Get new filesize
 		String sprite_filename = "";
 		if (Sprite.isTransparent(image)) {
 			sprite_filename = this.config.getRGBAFileName()+"."+this.config.getRGBAFileExtension();
 		} else sprite_filename = this.config.getRGBFileName()+"."+this.config.getRGBFileExtension();
 		
-		long new_size = new File(sprite_filename).length();
+		long new_size = new File(location+sprite_filename).length();
 		
 		this.config.output(String.format("Results for sprite %s\n", this.name));
 		this.config.output(String.format("Original file(s) size: %s\n", Sprite.translateSize(this.original_size)));

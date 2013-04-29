@@ -2,16 +2,13 @@ package sprite_generator;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
@@ -42,12 +39,12 @@ public class SpriteGenerator {
 		for(int i=0; i<urls.length; i++) {
 			try {
 				URL url = new URL(urls[i]);
-				get_url_data(url);
+				images.add(get_url_data(url));
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.printf("Invalid URL.\n");
 			}
 		}
+		this.config.output(ConfigOptions.SEPARATOR);
 		
 		this.images = (images.toArray(new File[0]));
 	}
@@ -79,17 +76,19 @@ public class SpriteGenerator {
 	}
 	
 	//Save URL data to the local temp directory
-	private void get_url_data(URL url) {
+	private File get_url_data(URL url) {
 		String full_path = url.getFile();
+		
+		this.config.output(String.format("Fetching file: %s\n", full_path));
 
 		//Extract filename
 		String filename = full_path.substring(full_path.lastIndexOf('/')+1);
 		//Only allow valid filenames
 		if (filename.indexOf('?') >= 0) filename = filename.substring(0, filename.indexOf('?'));
 		
-		
 		//Create file
 		File new_file = new File(SpriteGenerator.TMP_DIR_NAME+File.separator+this.tmp_dir+File.separator+filename);
+		new_file.deleteOnExit();
 		try {
 			new_file.createNewFile();
 		} catch (IOException e1) {
@@ -110,10 +109,10 @@ public class SpriteGenerator {
 			in.close();
 			out.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.printf("Could not fetch file: %s\n", full_path);
 		}
 		
+		return new_file;
 	}
 	
 	
@@ -132,8 +131,10 @@ public class SpriteGenerator {
 			return;
 		}
 		
+		/* *** Read images as local files *** */
 		//SpriteGenerator sprite_gen = new SpriteGenerator(image_root_file.listFiles());
 		
+		/* *** Read images as URIs *** */
 		ArrayList<String> urls = new ArrayList<String>();
 		File[] files = image_root_file.listFiles();
 		for(int i=0; i<files.length; i++) {
@@ -188,10 +189,12 @@ public class SpriteGenerator {
 	
 	//Write image to file
 	public void write_to_file() {
-		this.sprite_writer.write_to_file(this.sprite_rgb);
-		this.sprite_rgb.print_analytics();
+		String location = SpriteGenerator.TMP_DIR_NAME+File.separator+this.tmp_dir+File.separator;
 		
-		this.sprite_writer.write_to_file(this.sprite_rgba);
-		this.sprite_rgba.print_analytics();
+		this.sprite_writer.write_to_file(this.sprite_rgb, location);
+		this.sprite_rgb.print_analytics(location);
+		
+		this.sprite_writer.write_to_file(this.sprite_rgba, location);
+		this.sprite_rgba.print_analytics(location);
 	}
 }

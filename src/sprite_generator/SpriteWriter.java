@@ -47,7 +47,7 @@ public class SpriteWriter {
 	}
 	
 	//Write to file
-	protected void write_to_file(Sprite sprite) {
+	protected void write_to_file(Sprite sprite, String location) {
 		String format = "";
 		String filename = "";
 		
@@ -80,7 +80,7 @@ public class SpriteWriter {
 		}
 		
 		try {
-			img_writer.setOutput(ImageIO.createImageOutputStream(new FileOutputStream(new File(filename+"."+format))));
+			img_writer.setOutput(ImageIO.createImageOutputStream(new FileOutputStream(new File(location+filename+"."+format))));
 			img_writer.write(null, new IIOImage(sprite.image, null, null), img_write_params);
 			this.config.output(String.format("%s.%s written.%s", filename, format, ConfigOptions.SEPARATOR));
 		} catch (IOException e) {

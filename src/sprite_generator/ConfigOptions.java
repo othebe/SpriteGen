@@ -57,6 +57,14 @@ public class ConfigOptions {
 			case "verbose":
 				this.options.put(option, Boolean.parseBoolean(value));
 				break;
+			//Logger output (console/file)
+			case "logger_output":
+				this.options.put(option, value.toLowerCase());
+				break;
+			//Logger output file
+			case "logger_output_file":
+				this.options.put(option, value);
+				break;
 			//Packer type (fifo)
 			case "packer":
 				this.options.put(option, value.toLowerCase());
@@ -108,6 +116,17 @@ public class ConfigOptions {
 	//Is verbose mode on?
 	public boolean isVerbose() {
 		return (this.options.containsKey("verbose")?(boolean)this.options.get("verbose"):false);
+	}
+	
+	//Get logger output type
+	public String getLoggerOutputType() {
+		return (this.options.containsKey("logger_output")?(String)this.options.get("logger_output"):"console");
+	}
+	
+	//Get logger output name
+	public String getLoggerOutputName() {
+		if (this.getLoggerOutputType() != "file") return "";
+		return (this.options.containsKey("logger_output_file")?(String)this.options.get("logger_output_file"):"results.log");
 	}
 	
 	//Get packer type
