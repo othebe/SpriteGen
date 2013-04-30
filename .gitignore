@@ -1,5 +1,5 @@
 /images
 /tmp
-/bin/*
 /*.png
 /*.jpg
+/bin/sprite_generator/Packers/*.class

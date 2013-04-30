@@ -73,6 +73,7 @@ public class SpriteGenerator {
 			File local_tmp_dir = new File(SpriteGenerator.TMP_DIR_NAME+File.separator+this.tmp_dir);
 			tmp_dir_created = local_tmp_dir.mkdir();
 		} while (!tmp_dir_created);
+		this.config.setLogOutputDir(SpriteGenerator.TMP_DIR_NAME+File.separator+this.tmp_dir);
 	}
 	
 	//Save URL data to the local temp directory

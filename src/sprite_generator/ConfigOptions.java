@@ -2,6 +2,8 @@ package sprite_generator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -10,6 +12,7 @@ import java.util.Set;
 
 public class ConfigOptions {
 	private File config_file;
+	private String log_output_dir;
 	
 	//Configuration options
 	private HashMap<String, Object> options;
@@ -20,6 +23,7 @@ public class ConfigOptions {
 	//Build configuration from file
 	public ConfigOptions(String conf_file) {
 		this.config_file = new File(conf_file);
+		this.log_output_dir = ".";
 		this.options = new HashMap<String, Object>();
 		read_config_file();
 	}
@@ -106,8 +110,27 @@ public class ConfigOptions {
 	//Print verbose
 	protected void output(String s) {
 		if (this.options.containsKey("verbose") && (boolean) this.options.get("verbose")) {
-			System.out.printf("%s", s);
+			//Log to console
+			int y = this.getLoggerOutputName().length();
+			if (this.getLoggerOutputType().equals("console")) {
+				System.out.printf("%s", s);
+			}
+			//Log to file
+			else if (this.getLoggerOutputType().equals("file") && this.getLoggerOutputName().length()>0) {
+				try {
+					FileOutputStream out = new FileOutputStream(new File(log_output_dir+File.separator+this.getLoggerOutputName()), true);
+					out.write(s.getBytes());
+					out.close();
+				} catch (IOException e) {
+					System.err.printf("Error writing log file: %s\n", this.getLoggerOutputName());
+				}
+			}
 		}
+	}
+	
+	//Set log file output dir
+	public void setLogOutputDir(String dir) {
+		this.log_output_dir = dir;
 	}
 	
 	
@@ -125,7 +148,7 @@ public class ConfigOptions {
 	
 	//Get logger output name
 	public String getLoggerOutputName() {
-		if (this.getLoggerOutputType() != "file") return "";
+		if (!this.getLoggerOutputType().equals("file")) return "";
 		return (this.options.containsKey("logger_output_file")?(String)this.options.get("logger_output_file"):"results.log");
 	}
 	
