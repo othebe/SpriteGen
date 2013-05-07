@@ -41,8 +41,8 @@ public class ImageTile {
 	private BufferedImage rotate(BufferedImage image) {
 		//Apply transformations
 		AffineTransform transform = new AffineTransform();
-		transform.rotate(Math.PI/2, image.getWidth()/2, image.getHeight()/2);
-		transform.translate(image.getHeight(), image.getHeight());
+		transform.rotate(Math.toRadians(90));
+		transform.translate(0, image.getHeight()*-1);
 		AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
 		BufferedImage transformed_img = new BufferedImage(image.getHeight(), image.getWidth(), image.getType());
 		op.filter(image, transformed_img);

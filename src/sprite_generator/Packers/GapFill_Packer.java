@@ -44,10 +44,10 @@ public class GapFill_Packer extends Packer {
 			this.width_pointer = 0;
 			this.height_pointer = current_grid_height;
 			
-			add_to_grid(this.width_pointer, this.height_pointer, Math.max(big_img.getWidth(), current_grid_width), current_grid_height+big_img.getHeight(), false);
+			add_to_grid(this.width_pointer, this.height_pointer, Math.max(Math.max(big_img.getWidth(), big_img.getHeight()), current_grid_width), current_grid_height+Math.min(big_img.getHeight(), big_img.getWidth()), false);
 			
 			//Add the smaller blocks
-			add_to_grid(this.width_pointer, this.height_pointer, Math.max(big_img.getWidth(), current_grid_width), current_grid_height+big_img.getHeight(), true);
+			add_to_grid(this.width_pointer, this.height_pointer, Math.max(Math.max(big_img.getWidth(), big_img.getHeight()), current_grid_width), current_grid_height+Math.min(big_img.getHeight(), big_img.getWidth()), true);
 		}
 		
 		//Create a linked list
