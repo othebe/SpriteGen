@@ -8,9 +8,12 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 
 public class SpriteGenerator {
 	private ConfigOptions config;
@@ -154,6 +157,17 @@ public class SpriteGenerator {
 		for(int image_ndx=0; image_ndx<images.length; image_ndx++) {
 			this.config.output(String.format("Reading file: %s\n", images[image_ndx].toString()));
 			try {
+				ImageInputStream instream = ImageIO.createImageInputStream(images[image_ndx]);
+				Iterator<ImageReader> readers = ImageIO.getImageReaders(instream);
+				if (!readers.hasNext()) continue;
+				
+				//Check if image is an animated source
+				ImageReader reader = readers.next();
+				reader.setInput(instream);
+				if (reader.getNumImages(true)>1) continue;
+				reader.dispose();
+				instream.close();
+				
 				BufferedImage buffered_image = ImageIO.read(images[image_ndx]);
 				
 				/* Images with transparency */
