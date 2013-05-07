@@ -1,6 +1,9 @@
 package sprite_generator;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,13 +35,17 @@ public class SpriteWriter {
 	//Convert an ImageGrid to a BufferedImage
 	private BufferedImage write(ImageGrid grid) {
 		LinkedList<ImageTile> image_tiles = grid.getGridImages();
+		if (image_tiles.size() == 0) return null;
 
 		BufferedImage image = new BufferedImage(grid.getWidth(), grid.getHeight(), image_tiles.getFirst().getBufferedImageType());
 		Iterator<ImageTile> iterator = image_tiles.iterator();
 		while (iterator.hasNext()) {
 			ImageTile image_tile = iterator.next();
+			BufferedImage tile_image = image_tile.getImage();
+			
 			Graphics g = image.getGraphics();
-			g.drawImage(image_tile.getImage(), image_tile.getX(), image_tile.getY(), null);
+			g.drawImage(tile_image, image_tile.getX(), image_tile.getY(), null);
+			g.dispose();
 		}
 		
 		this.config.output(String.format("Image written to memory. (%d x %d, args)\n %s", image.getWidth(), image.getHeight(), ConfigOptions.SEPARATOR));

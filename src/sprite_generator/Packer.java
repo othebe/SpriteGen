@@ -3,7 +3,7 @@ package sprite_generator;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import sprite_generator.Packers.FIFO_Packer;
+import sprite_generator.Packers.*;
 
 public abstract class Packer {
 	
@@ -22,6 +22,8 @@ public abstract class Packer {
 		switch (config.getPacker()) {
 			case "fifo":
 				return new FIFO_Packer(config);
+			case "gapfill":
+				return new GapFill_Packer(config);
 		}	
 		//Default
 		return new FIFO_Packer(config);

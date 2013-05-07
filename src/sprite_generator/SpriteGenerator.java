@@ -192,10 +192,14 @@ public class SpriteGenerator {
 	public void write_to_file() {
 		String location = SpriteGenerator.TMP_DIR_NAME+File.separator+this.tmp_dir+File.separator;
 		
-		this.sprite_writer.write_to_file(this.sprite_rgb, location);
-		this.sprite_rgb.print_analytics(location);
+		if (this.sprite_rgb.getBufferedImages().size() > 0) {
+			this.sprite_writer.write_to_file(this.sprite_rgb, location);
+			this.sprite_rgb.print_analytics(location);
+		}
 		
-		this.sprite_writer.write_to_file(this.sprite_rgba, location);
-		this.sprite_rgba.print_analytics(location);
+		if (this.sprite_rgba.getBufferedImages().size() > 0) {
+			this.sprite_writer.write_to_file(this.sprite_rgba, location);
+			this.sprite_rgba.print_analytics(location);
+		}
 	}
 }
