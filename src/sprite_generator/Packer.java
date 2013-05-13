@@ -15,7 +15,7 @@ public abstract class Packer {
 	}
 	
 	//Pack a ArrayList of BufferedImages and return an ImageGrid
-	protected abstract ImageGrid pack(ArrayList<BufferedImage> images);
+	protected abstract ImageGrid pack(ArrayList<ImageTile> images);
 	
 	//Create a Packer from a configuration object
 	protected static Packer createFromConfig(ConfigOptions config) {
@@ -32,7 +32,7 @@ public abstract class Packer {
 	//Start the packing process
 	protected void pack(Sprite sprite) {
 		this.config.output(String.format("Packing sprite %s\n", sprite.getName()));
-		sprite.image_grid = pack(sprite.getBufferedImages());
+		sprite.image_grid = pack(sprite.getImages());
 		
 		//Analytics
 		this.print_analytics(sprite.image_grid);

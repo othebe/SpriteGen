@@ -3,11 +3,12 @@ package sprite_generator;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Sprite {
 	private String name;
 	private long original_size;
-	private ArrayList<BufferedImage> buffered_images;
+	private ArrayList<ImageTile> images;
 	protected ImageGrid image_grid;
 	protected BufferedImage image;
 	private ConfigOptions config;
@@ -16,18 +17,13 @@ public class Sprite {
 	protected Sprite(String name, ConfigOptions config) {
 		this.name = name;
 		this.original_size = 0;
-		this.buffered_images = new ArrayList<BufferedImage>();
+		this.images = new ArrayList<ImageTile>();
 		this.config = config;
 	}
 	
-	//Add images to buffered image list
-	protected void add(BufferedImage b) {
-		this.buffered_images.add(b);
-	}
-	
 	//Add images to buffered image list, individual image size
-	protected void add(BufferedImage b, long image_size) {
-		this.buffered_images.add(b);
+	protected void add(ImageTile t, long image_size) {
+		this.images.add(t);
 		this.original_size += image_size;
 	}
 	
@@ -36,9 +32,9 @@ public class Sprite {
 		return this.name;
 	}
 	
-	//Get buffered_images
-	protected ArrayList<BufferedImage> getBufferedImages() {
-		return this.buffered_images;
+	//Get images
+	protected ArrayList<ImageTile> getImages() {
+		return this.images;
 	}
 	
 	//Print analytics

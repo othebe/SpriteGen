@@ -14,6 +14,7 @@ public class ImageTile {
 	int height;
 	boolean isRotated;
 	BufferedImage image;
+	String filename;
 	
 	//Constructor
 	public ImageTile(int x, int y, BufferedImage image) {
@@ -26,7 +27,7 @@ public class ImageTile {
 	}
 	
 	//Constructor
-	public ImageTile(int x, int y, BufferedImage image, boolean isRotated) {
+	public ImageTile(int x, int y, BufferedImage image, String filename, boolean isRotated) {
 		this.x = x;
 		this.y = y;
 		this.isRotated = isRotated;
@@ -35,6 +36,13 @@ public class ImageTile {
 		else this.image = image;
 		this.width = this.image.getWidth();
 		this.height = this.image.getHeight();
+		this.filename = filename;
+	}
+	
+	//Constructor
+	public ImageTile(String filename, BufferedImage image) {
+		this.image = image;
+		this.filename = filename;
 	}
 	
 	//Rotate image
@@ -51,27 +59,42 @@ public class ImageTile {
 	}
 	
 	//Get buffered image type
-	protected int getBufferedImageType() {
+	public int getBufferedImageType() {
 		return this.image.getType();
 	}
 	
 	//Get BufferedImage
-	protected BufferedImage getImage() {
+	public BufferedImage getImage() {
 		return this.image;
 	}
 	
+	//Get filename
+	public String getFilename() {
+		return this.filename;
+	}
+	
 	//Get x
-	protected int getX() {
+	public int getX() {
 		return this.x;
 	}
 	
 	//Get y
-	protected int getY() {
+	public int getY() {
 		return this.y;
 	}
 	
+	//Get width
+	public int getWidth() {
+		return this.width;
+	}
+	
+	//Get height
+	public int getHeight() {
+		return this.height;
+	}
+	
 	//Get rotation
-	protected boolean isRotated() {
+	public boolean isRotated() {
 		return this.isRotated;
 	}
 }

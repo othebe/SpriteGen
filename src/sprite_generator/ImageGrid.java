@@ -17,25 +17,6 @@ public class ImageGrid {
 		this.used_surface_area = 0;
 	}
 	
-	//Insert BufferedImage into image grid
-	public void insert(int x, int y, BufferedImage image) {
-		ImageTile img_tile = new ImageTile(x, y, image);
-		grid_images.add(img_tile);
-		
-		//Update width
-		if ((x+image.getWidth()) > this.width) {
-			this.width = x+image.getWidth();
-		}
-		
-		//Update height
-		if ((y+image.getHeight()) > this.height) {
-			this.height = y+image.getHeight();
-		}
-		
-		//Update used surface area
-		this.used_surface_area += (image.getWidth() * image.getHeight());
-	}
-	
 	//Insert a tile into the image grid
 	public void insert(ImageTile tile) {
 		grid_images.add(tile);

@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import sprite_generator.ConfigOptions;
 import sprite_generator.ImageGrid;
+import sprite_generator.ImageTile;
 import sprite_generator.Packer;
 import sprite_generator.Sprite;
 
@@ -16,12 +17,14 @@ public class FIFO_Packer extends Packer {
 	}
 
 	@Override
-	protected ImageGrid pack(ArrayList<BufferedImage> images) {
+	protected ImageGrid pack(ArrayList<ImageTile> images) {
 		ImageGrid grid = new ImageGrid();
 		
-		Iterator<BufferedImage> iterator = images.iterator();
+		Iterator<ImageTile> iterator = images.iterator();
 		while (iterator.hasNext()) {
-			grid.insert(0, grid.getHeight(), iterator.next());
+			ImageTile tile = iterator.next();
+			grid.insert(new ImageTile(tile.getX(), tile.getY(), tile.getImage(), tile.getFilename(), false));
+			grid.insert(tile);
 		}
 		return grid;
 	}
