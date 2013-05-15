@@ -43,6 +43,8 @@ public class ImageTile {
 	public ImageTile(String filename, BufferedImage image) {
 		this.image = image;
 		this.filename = filename;
+		this.width = this.image.getWidth();
+		this.height = this.image.getHeight();
 	}
 	
 	//Rotate image

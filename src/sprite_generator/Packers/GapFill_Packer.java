@@ -99,7 +99,7 @@ public class GapFill_Packer extends Packer {
 	//Description:	Tries to add to a grid based on boundaries
 	private void add_to_grid(int x1, int y1, int x2, int y2, boolean isReverse) {
 		boolean within_boundary = true;
-		BufferedImage img;
+		ImageTile tile;
 		int ndx;
 		int last_img_height = 0;
 		
@@ -108,19 +108,19 @@ public class GapFill_Packer extends Packer {
 			if (isReverse) {
 				if (!this.small.hasPrevious()) return;
 				ndx = this.small.previousIndex();
-				img = this.small.previous();
+				tile = this.small.previous();
 			} else {
 				if (!this.big.hasNext()) return;
 				ndx = this.big.nextIndex();
-				img = this.big.next();
+				tile = this.big.next();
 			}
 			
 			//Check if image has been seen
 			if (this.added_images[ndx]) break;
 				
 			//Check boundaries
-			int img_width = img.getWidth();
-			int img_height = img.getHeight();
+			int img_width = tile.getWidth();
+			int img_height = tile.getHeight();
 			
 			//Check if we need to rotate
 			boolean rotate = false;
@@ -137,8 +137,8 @@ public class GapFill_Packer extends Packer {
 			//Can we add it on the same line?
 			within_boundary = ((this.width_pointer+img_width) <= x2) && ((this.height_pointer+img_height) <= y2);
 			if (within_boundary) {
-				ImageTile tile = new ImageTile(this.width_pointer, this.height_pointer, img, rotate);
-				this.grid.insert(tile);
+				ImageTile newtile = new ImageTile(this.width_pointer, this.height_pointer, tile.getImage(), tile.getFilename(), rotate);
+				this.grid.insert(newtile);
 				this.added_images[ndx] = true;
 				this.width_pointer = (this.width_pointer+img_width);
 				last_img_height = img_height;
@@ -149,8 +149,8 @@ public class GapFill_Packer extends Packer {
 			within_boundary = ((x1+img_width) <= x2) && ((this.height_pointer+last_img_height+img_height) <= y2);
 			if (within_boundary) {
 				this.height_pointer += last_img_height;
-				ImageTile tile = new ImageTile(x1, this.height_pointer, img, rotate);
-				this.grid.insert(tile);
+				ImageTile newtile = new ImageTile(x1, this.height_pointer, tile.getImage(), tile.getFilename(), rotate);
+				this.grid.insert(newtile);
 				this.added_images[ndx] = true;
 				this.width_pointer = (x1+img_width);
 				last_img_height = img_height;
